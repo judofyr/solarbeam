@@ -1,6 +1,7 @@
 package SolarBeam::Response;
 
 use Mojo::Base -base;
+use Data::Page;
 
 has 'status';
 has 'QTime';
@@ -9,6 +10,7 @@ has 'params';
 has 'numFound';
 has 'start';
 has 'docs';
+has 'page' => sub { Data::Page->new };
 
 sub new {
   my ($class, $data) = @_;
@@ -27,6 +29,10 @@ sub new {
 
   for $field (keys %{$res}) {
     $self->$field($res->{$field});
+  }
+  
+  if ($self->ok) {
+    $self->page->total_entries($self->numFound);
   }
 
   $self;

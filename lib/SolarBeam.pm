@@ -18,10 +18,23 @@ sub search {
   my $url = $self->mojo_url->clone;
   $url->path('select');
   $url->query(q => $query, wt => 'json');
+
+  my $page = $options{page};
+  if ($page) {
+    $options{start} = ($page - 1) * $options{rows};
+    delete $options{page};
+  }
+
   $url->query(\%options);
 
   $self->user_agent->get($url, sub {
     my $res = SolarBeam::Response->new(pop->res->json);
+
+    if ($res->ok) {
+      $res->page->current_page($page);
+      $res->page->entries_per_page($options{rows});
+    }
+
     $callback->(shift, $res);
   });
 }
