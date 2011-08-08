@@ -4,7 +4,7 @@ use Mojo::Base -base;
 use Mojo::UserAgent;
 use Mojo::URL;
 use SolarBeam::Response;
-use WebService::Solr::Query;
+use SolarBeam::Query;
 
 has 'url';
 has 'mojo_url' => sub { Mojo::URL->new(shift->url) };
@@ -44,7 +44,7 @@ sub build_query {
   my ($self, $query) = @_;
 
   if (ref $query) {
-    WebService::Solr::Query->new($query);
+    SolarBeam::Query->new($query);
   } else {
     $query;
   }
