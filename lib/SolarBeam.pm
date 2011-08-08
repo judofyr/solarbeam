@@ -21,6 +21,7 @@ sub search {
 
   my $page = $options{page};
   if ($page) {
+    die "You must provide both page and rows" unless $options{rows};
     $options{start} = ($page - 1) * $options{rows};
     delete $options{page};
   }
@@ -30,7 +31,7 @@ sub search {
   $self->user_agent->get($url, sub {
     my $res = SolarBeam::Response->new(pop->res->json);
 
-    if ($res->ok) {
+    if ($page && $res->ok) {
       $res->page->current_page($page);
       $res->page->entries_per_page($options{rows});
     }
