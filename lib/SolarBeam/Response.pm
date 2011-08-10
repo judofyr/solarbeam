@@ -10,7 +10,7 @@ has 'params';
 has 'numFound';
 has 'start';
 has 'docs';
-has 'page' => sub { Data::Page->new };
+has 'pager' => sub { Data::Page->new };
 
 sub new {
   my ($class, $data) = @_;
@@ -32,7 +32,7 @@ sub new {
   }
   
   if ($self->ok) {
-    $self->page->total_entries($self->numFound);
+    $self->pager->total_entries($self->numFound);
   }
 
   $self;

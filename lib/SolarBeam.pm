@@ -32,8 +32,8 @@ sub search {
     my $res = SolarBeam::Response->new(pop->res->json);
 
     if ($page && $res->ok) {
-      $res->page->current_page($page);
-      $res->page->entries_per_page($options{rows});
+      $res->pager->current_page($page);
+      $res->pager->entries_per_page($options{rows});
     }
 
     $callback->(shift, $res);
