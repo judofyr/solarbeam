@@ -70,7 +70,7 @@ sub build_query {
     $raw =~ s|%([a-z]+)|$self->escape($params{$1})|ge;
     $raw;
   } else {
-    $query;
+    $self->escape($query);
   }
 }
 
