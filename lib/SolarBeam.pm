@@ -25,6 +25,7 @@ sub search {
 
   my $page = $options->{page};
   $self->handle_page($options->{page}, $options) if $page;
+  $self->handle_fq($options->{fq}, $options) if $options->{fq};
 
   $url->query($options);
 
@@ -45,6 +46,17 @@ sub handle_page {
   die "You must provide both page and rows" unless $options->{rows};
   $options->{start} = ($page - 1) * $options->{rows};
   delete $options->{page};
+}
+
+sub handle_fq {
+  my ($self, $fq, $options) = @_;
+
+  if (ref($fq) eq 'ARRAY') {
+    my @queries = map { $self->build_query($_) } @{$fq};
+    $options->{fq} = \@queries;
+  } else {
+    $options->{fq} = $self->build_query($fq);
+  }
 }
 
 sub build_query {
