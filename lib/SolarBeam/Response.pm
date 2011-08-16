@@ -20,7 +20,8 @@ sub new {
   my $field;
 
   if (!$header and !$res) {
-    die "Unknown response";
+    $self->status = 1;
+    return $self;
   }
 
   for $field (keys %{$header}) {
