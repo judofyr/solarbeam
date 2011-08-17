@@ -64,7 +64,7 @@ sub build_query {
 
   my $type = ref($query);
   if ($type eq 'HASH') {
-    SolarBeam::Query->new($query);
+    $self->build_hash(%{$query});
   } elsif ($type eq 'ARRAY') {
     my ($raw, %params) = @{$query};
     $raw =~ s|%([a-z]+)|$self->escape($params{$1})|ge;
@@ -72,6 +72,15 @@ sub build_query {
   } else {
     $query;
   }
+}
+
+sub build_hash {
+  my ($self, %fields) = @_;
+
+  '('.
+    join(' AND ',
+    map { $_ . ':(' . $self->escape($fields{$_}). ')' } keys %fields).
+  ')';
 }
 
 sub escape {
