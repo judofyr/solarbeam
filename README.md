@@ -22,15 +22,44 @@ $sb->search({author => 'Magnus Holm'}, sub {
   # …
 });
 
+$sb->search(['author:(%name)^10', name => 'Magnus Holm'], sub {
+  my $res = pop;
+  # …
+});
+
 Mojo::IOLoop->start;
 ```
 
-## Complex queries
+## Queries
 
-If you need more complex queries (and *don't* want to manually escape
-input) you can give `search()` a HASHREF. At the moment it uses
-[WebService::Solr::Query][solr-query] to build the query, but this might
-change in the future.
+### Raw
 
-[solr-query]: http://search.cpan.org/~bricas/WebService-Solr-0.15/lib/WebService/Solr/Query.pm
+```perl
+$sb->search('Hello AND World');
+# This will search for: ?q=Hello AND World
+```
+
+### Fields
+
+```perl
+$sb->search({author => 'Magnus', topic => 'Perl'});
+# This will search for ?q=(author:Magnus AND topic:Perl)
+# All special characters except for * and ? will be escaped
+
+$sb->search({author => \'Magnus', topic => \'Perl'});
+# If you pass in a string reference, * and ? will also be esacped.
+# Mnemonic: If you "escape" the string, *everything* will be escaped.
+```
+
+### Parameter
+
+```perl
+$sb->search(['(%query OR author:(%query)^5)', query => 'Magnus']);
+# This will search for ?q=(Magnus or author:(Magnus)^5)
+# All special characters except for * and ? will be escaped
+
+$sb->search(['(%query OR author:(%query)^5)', query => \'Magnus']);
+# If you pass in a string reference, * and ? will also be esacped.
+# Mnemonic: If you "escape" the string, *everything* will be escaped.
+```
 
