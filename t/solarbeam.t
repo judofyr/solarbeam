@@ -8,7 +8,7 @@ use_ok 'SolarBeam';
 my $sb = SolarBeam->new(url => 'http://localhost/');
 is($sb->url, 'http://localhost/');
 
-is($sb->escape('hel*o "world'), 'hel*o \\"world');
+is($sb->escape('hel*o "world'), 'hel*o "world');
 is($sb->escape(\'hel*o "world'), 'hel\\*o \\"world');
 
 is($sb->build_query('hello'), 'hello');
