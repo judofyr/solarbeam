@@ -11,7 +11,7 @@ has 'mojo_url' => sub { Mojo::URL->new(shift->url) };
 has 'user_agent' => sub { Mojo::UserAgent->new };
 
 my $escape_all   = quotemeta( '+-&|!(){}[]^"~*?:\\' );
-my $escape_wilds = quotemeta( '+-&|!(){}[]^"~:\\' );
+my $escape_wilds = quotemeta( '+-&|!(){}[]^~:\\' );
 
 sub search {
   my $callback = pop;
