@@ -49,6 +49,10 @@ sub build_url {
     $self->handle_fq($options->{fq}, $options);
   }
 
+  if ($options->{facet}) {
+    $self->handle_facet($options->{facet}, $options);
+  }
+
   $url->query($options);
 
   return $url;
@@ -69,6 +73,28 @@ sub handle_fq {
     $options->{fq} = \@queries;
   } else {
     $options->{fq} = $self->build_query($fq);
+  }
+}
+
+sub handle_facet {
+  my ($self, $facet, $options) = @_;
+  $self->handle_nested_hash('facet', $facet, $options);
+}
+
+sub handle_nested_hash {
+  my ($self, $prefix, $content, $options) = @_;
+  my $type = ref $content;
+
+  if ($type eq 'HASH') {
+    $content->{-value} or $content->{-value} = 'true';
+
+    for my $key (keys %{$content}) {
+      my $name = $prefix;
+      $name .= '.'. $key if $key ne '-value';
+      $self->handle_nested_hash($name, $content->{$key}, $options);
+    }
+  } else {
+    $options->{$prefix} = $content;
   }
 }
 
