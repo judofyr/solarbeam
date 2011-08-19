@@ -17,9 +17,10 @@ sub search {
   my $callback = pop;
   my ($self, $query, %options) = @_;
   my $options = \%options;
-
   my $page = $options->{page};
-  my $url = $self->build_url($query, $options);
+  $options->{-query} = $query;
+
+  my $url = $self->build_url($options);
 
   $self->user_agent->get($url, sub {
     my $res = SolarBeam::Response->new(pop->res->json);
@@ -33,13 +34,31 @@ sub search {
   });
 }
 
-sub build_url {
-  my ($self, $query, $options) = @_;
-  $query = $self->build_query($query);
+sub autocomplete {
+  my $callback = pop;
+  my ($self, $prefix, %options) = @_;
+  $options{'regex.flag'} = 'case_insensitiv';
+  $options{'regex'} = quotemeta($prefix) . '.*';
+  my $options = { terms => \%options, -endpoint => 'terms' };
 
+  my $url = $self->build_url($options);
+
+  $self->user_agent->get($url, sub {
+    my $res = SolarBeam::Response->new(pop->res->json);
+    $callback->(shift, $res);
+  });
+}
+
+sub build_url {
+  my ($self, $options) = @_;
+
+  my $endpoint = delete $options->{-endpoint};
+  my $query = delete $options->{-query};
   my $url = $self->mojo_url->clone;
-  $url->path('select');
-  $url->query(q => $query, wt => 'json');
+
+  $url->path($endpoint || 'select');
+  $url->query(q => $self->build_query($query)) if $query;
+  $url->query({wt => 'json'});
 
   if ($options->{page}) {
     $self->handle_page($options->{page}, $options);
@@ -51,6 +70,10 @@ sub build_url {
 
   if ($options->{facet}) {
     $self->handle_facet($options->{facet}, $options);
+  }
+
+  if ($options->{terms}) {
+    $self->handle_nested_hash('terms', $options->{terms}, $options);
   }
 
   $url->query($options);

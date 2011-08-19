@@ -4,7 +4,11 @@ use warnings;
 use Test::More tests => 13;
 
 sub is_query {
-  my ($url, %query) = @_;
+  my $url = shift;
+  if (scalar(@_) % 2 == 1) {
+    is($url->path, shift);
+  }
+  my %query = @_;
   is_deeply($url->query->to_hash, \%query);
 }
 
@@ -21,45 +25,45 @@ is($sb->build_query(['%hello = %world', hello => '*', world => \'*']), '* = \\*'
 is($sb->build_query({hello => 'world'}), '(hello:(world))');
 
 is_query(
-  $sb->build_url('Hello * world'),
-  q => 'Hello * world',
+  $sb->build_url(),
+  '/select',
   wt => 'json'
 );
 
 is_query(
-  $sb->build_url('test', { page => 5, rows => 10 }),
-  q => 'test',
+  $sb->build_url({ page => 5, rows => 10 }),
+  '/select',
   rows => 10,
   start => 40,
   wt => 'json'
 );
 
 is_query(
-  $sb->build_url('test', { fq => 'hello*' }),
-  q => 'test',
+  $sb->build_url({ fq => 'hello*' }),
+  '/select',
   fq => 'hello*',
   wt => 'json'
 );
 
 is_query(
-  $sb->build_url('test', { fq => [
+  $sb->build_url({ fq => [
         '(foo)',
         {bar => 1},
         ['qux:%qux', qux => \'cool*']
     ]}),
 
-  q => 'test',
+  '/select',
   wt => 'json',
   fq => ['(foo)', '(bar:(1))', 'qux:cool\*']
 );
 
 is_query(
-  $sb->build_url('test', { facet => {
+  $sb->build_url({ facet => {
         field => 'identifier.owner',
         mincount => 1
       }}),
 
-  q => 'test',
+  '/select',
   wt => 'json',
   facet => 'true',
   'facet.field' => 'identifier.owner',
@@ -68,14 +72,14 @@ is_query(
 
 
 is_query(
-  $sb->build_url('test', { facet => {
+  $sb->build_url({ facet => {
         range => {
           -value => 'year', gap => 100, start => 0, end => 2000
         },
         mincount => 1
       }}),
 
-  q => 'test',
+  '/select',
   wt => 'json',
   facet => 'true',
   'facet.range' => 'year',
@@ -83,5 +87,15 @@ is_query(
   'facet.range.start' => 0,
   'facet.range.end' => 2000,
   'facet.mincount' => 1
+);
+
+is_query(
+  $sb->build_url({ -endpoint => 'terms', terms => {
+        fl => 'artifact.name'
+      }}),
+  '/terms',
+  wt => 'json',
+  terms => 'true',
+  'terms.fl' => 'artifact.name'
 );
 
