@@ -18,11 +18,14 @@ sub fixture {
 use_ok 'SolarBeam::Response';
 
 my $res = SolarBeam::Response->new(fixture('simple'));
+ok($res->ok);
 is($res->numFound, 2462);
+is($res->pager->total_entries, 2462);
 ok($res->docs);
 is(scalar @{$res->docs}, 10);
 
-my $res = SolarBeam::Response->new(fixture('facets'));
+$res = SolarBeam::Response->new(fixture('facets'));
+ok($res->ok);
 ok($res->facet_fields);
 is(scalar @{$res->facet_fields->{'identifier.owner'}}, 168);
 

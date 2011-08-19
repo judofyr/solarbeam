@@ -10,6 +10,12 @@ has 'params';
 has 'numFound';
 has 'start';
 has 'docs';
+
+has 'facet_queries';
+has 'facet_fields';
+has 'facet_dates';
+has 'facet_ranges';
+
 has 'pager' => sub { Data::Page->new };
 
 sub new {
@@ -17,6 +23,7 @@ sub new {
   my $self = $class->SUPER::new;
   my $header = $data->{responseHeader};
   my $res = $data->{response};
+  my $facets = $data->{facet_counts};
   my $field;
 
   if (!$header and !$res) {
@@ -30,6 +37,10 @@ sub new {
 
   for $field (keys %{$res}) {
     $self->$field($res->{$field});
+  }
+
+  for $field (keys %{$facets}) {
+    $self->$field($facets->{$field});
   }
   
   if ($self->ok) {
