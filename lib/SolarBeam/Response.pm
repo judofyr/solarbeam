@@ -16,6 +16,8 @@ has 'facet_fields';
 has 'facet_dates';
 has 'facet_ranges';
 
+has 'terms';
+
 has 'pager' => sub { Data::Page->new };
 
 sub new {
@@ -24,9 +26,10 @@ sub new {
   my $header = $data->{responseHeader};
   my $res = $data->{response};
   my $facets = $data->{facet_counts};
+  my $terms = $data->{terms};
   my $field;
 
-  if (!$header and !$res) {
+  if (!$header) {
     $self->status = 1;
     return $self;
   }
@@ -42,8 +45,17 @@ sub new {
   for $field (keys %{$facets}) {
     $self->$field($facets->{$field});
   }
+
+  if ($terms) {
+    my $sane_terms = {};
+    for $field (keys %{$terms}) {
+      my %values = @{$terms->{$field}};
+      $sane_terms->{$field} = \%values;
+    }
+    $self->terms($sane_terms);
+  }
   
-  if ($self->ok) {
+  if ($self->ok && $res) {
     $self->pager->total_entries($self->numFound);
   }
 

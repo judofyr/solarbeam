@@ -29,4 +29,8 @@ ok($res->ok);
 ok($res->facet_fields);
 is(scalar @{$res->facet_fields->{'identifier.owner'}}, 168);
 
+$res = SolarBeam::Response->new(fixture('terms'));
+ok($res->ok);
+ok($res->terms);
+is(scalar keys %{$res->terms->{'artifact.name'}}, 10);
 
