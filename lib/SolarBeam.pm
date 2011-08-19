@@ -17,17 +17,9 @@ sub search {
   my $callback = pop;
   my ($self, $query, %options) = @_;
   my $options = \%options;
-  $query = $self->build_query($query);
-
-  my $url = $self->mojo_url->clone;
-  $url->path('select');
-  $url->query(q => $query, wt => 'json');
 
   my $page = $options->{page};
-  $self->handle_page($options->{page}, $options) if $page;
-  $self->handle_fq($options->{fq}, $options) if $options->{fq};
-
-  $url->query($options);
+  my $url = $self->build_url($query, $options);
 
   $self->user_agent->get($url, sub {
     my $res = SolarBeam::Response->new(pop->res->json);
@@ -39,6 +31,27 @@ sub search {
 
     $callback->(shift, $res);
   });
+}
+
+sub build_url {
+  my ($self, $query, $options) = @_;
+  $query = $self->build_query($query);
+
+  my $url = $self->mojo_url->clone;
+  $url->path('select');
+  $url->query(q => $query, wt => 'json');
+
+  if ($options->{page}) {
+    $self->handle_page($options->{page}, $options);
+  }
+
+  if ($options->{fq}) {
+    $self->handle_fq($options->{fq}, $options);
+  }
+
+  $url->query($options);
+
+  return $url;
 }
 
 sub handle_page {
