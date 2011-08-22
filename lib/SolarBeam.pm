@@ -38,7 +38,7 @@ sub autocomplete {
   my $callback = pop;
   my ($self, $prefix, %options) = @_;
   $options{'regex.flag'} = 'case_insensitive';
-  $options{'regex'} = quotemeta($prefix) . '.*';
+  $options{'regex'} = quotemeta($prefix) . '\w+';
   my $options = { terms => \%options, -endpoint => 'terms' };
 
   my $url = $self->build_url($options);

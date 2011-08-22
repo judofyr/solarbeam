@@ -16,7 +16,7 @@ $mock->expect("/terms",
   wt => 'json',
   terms => 'true',
   'terms.fl' => 'artifact.name',
-  'terms.regex' => 'ost.*',
+  'terms.regex' => 'ost\w+',
   'terms.regex.flag' => 'case_insensitive'
 );
 
