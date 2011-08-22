@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More 'no_plan';
 
 sub is_query {
   my $url = shift;

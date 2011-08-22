@@ -30,7 +30,7 @@ sub new {
   my $field;
 
   if (!$header) {
-    $self->status = 1;
+    $self->status(1);
     return $self;
   }
 
