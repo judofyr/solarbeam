@@ -17,7 +17,7 @@ $mock->expect("/terms",
   terms => 'true',
   'terms.fl' => 'artifact.name',
   'terms.regex' => 'ost.*',
-  'terms.regex.flag' => 'case_insensitiv'
+  'terms.regex.flag' => 'case_insensitive'
 );
 
 $sb->autocomplete('ost', fl => 'artifact.name', sub {});

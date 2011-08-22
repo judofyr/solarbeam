@@ -37,7 +37,7 @@ sub search {
 sub autocomplete {
   my $callback = pop;
   my ($self, $prefix, %options) = @_;
-  $options{'regex.flag'} = 'case_insensitiv';
+  $options{'regex.flag'} = 'case_insensitive';
   $options{'regex'} = quotemeta($prefix) . '.*';
   my $options = { terms => \%options, -endpoint => 'terms' };
 
