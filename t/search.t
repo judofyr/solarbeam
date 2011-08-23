@@ -22,6 +22,22 @@ $mock->expect("/terms",
 
 $sb->autocomplete('ost', fl => 'artifact.name', sub {});
 
+$mock->expect("/terms",
+  wt => 'json',
+  terms => 'true',
+  'terms.fl' => 'artifact.name',
+  'terms.regex' => 'ost.*',
+  'terms.regex.flag' => 'case_insensitive'
+);
+
+$sb->autocomplete('ost',
+  -postfix => '.*',
+  fl => 'artifact.name',
+  sub { }
+);
+
+ok(!$sb->user_agent->{expect});
+
 package UserAgentMock;
 use Test::More;
 

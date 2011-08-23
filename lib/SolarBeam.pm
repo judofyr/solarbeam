@@ -37,8 +37,10 @@ sub search {
 sub autocomplete {
   my $callback = pop;
   my ($self, $prefix, %options) = @_;
+  my $postfix = delete $options{'-postfix'} || '\w+';
+
   $options{'regex.flag'} = 'case_insensitive';
-  $options{'regex'} = quotemeta($prefix) . '\w+';
+  $options{'regex'} = quotemeta($prefix) . $postfix;
   my $options = { terms => \%options, -endpoint => 'terms' };
 
   my $url = $self->build_url($options);
