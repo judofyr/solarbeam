@@ -35,15 +35,15 @@ sub new {
   }
 
   for $field (keys %{$header}) {
-    $self->$field($header->{$field});
+    $self->$field($header->{$field}) if $self->can($field);
   }
 
   for $field (keys %{$res}) {
-    $self->$field($res->{$field});
+    $self->$field($res->{$field}) if $self->can($field);
   }
 
   for $field (keys %{$facets}) {
-    $self->$field($facets->{$field});
+    $self->$field($facets->{$field}) if $self->can($field);
   }
 
   if ($terms) {

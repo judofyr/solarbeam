@@ -37,3 +37,6 @@ is(scalar keys %{$res->terms->{'artifact.name'}}, 10);
 $res = SolarBeam::Response->new(fixture('fail'));
 ok(!$res->ok);
 
+$res = SolarBeam::Response->new(fixture('unknown'));
+ok($res->ok);
+
