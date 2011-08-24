@@ -46,11 +46,18 @@ sub new {
     $self->$field($facets->{$field}) if $self->can($field);
   }
 
+  if ($facets) {
+    my $facet_fields = {};
+    for $field (keys %{$facets->{facet_fields}}) {
+      $facet_fields->{$field} = $self->build_count_list($facets->{facet_fields}->{$field});
+    }
+    $self->facet_fields($facet_fields);
+  }
+
   if ($terms) {
     my $sane_terms = {};
     for $field (keys %{$terms}) {
-      my %values = @{$terms->{$field}};
-      $sane_terms->{$field} = \%values;
+      $sane_terms->{$field} = $self->build_count_list($terms->{$field});
     }
     $self->terms($sane_terms);
   }
@@ -65,6 +72,15 @@ sub new {
 sub ok {
   my $self = shift;
   $self->status == 0;
+}
+
+sub build_count_list {
+  my ($self, $list) = @_;
+  my @result = ();
+  for (my $i = 1; $i < @$list; $i += 2) {
+    push @result, { value => $list->[$i-1], count => $list->[$i] }
+  }
+  return \@result;
 }
 
 1;

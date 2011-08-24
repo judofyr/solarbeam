@@ -27,12 +27,16 @@ is(scalar @{$res->docs}, 10);
 $res = SolarBeam::Response->new(fixture('facets'));
 ok($res->ok);
 ok($res->facet_fields);
-is(scalar @{$res->facet_fields->{'identifier.owner'}}, 168);
+is(scalar @{$res->facet_fields->{'identifier.owner'}}, 84);
+is($res->facet_fields->{'identifier.owner'}->[0]->{value}, 'NF');
+is($res->facet_fields->{'identifier.owner'}->[0]->{count}, 358262);
 
 $res = SolarBeam::Response->new(fixture('terms'));
 ok($res->ok);
 ok($res->terms);
-is(scalar keys %{$res->terms->{'artifact.name'}}, 10);
+is(scalar @{$res->terms->{'artifact.name'}}, 10);
+is($res->terms->{'artifact.name'}->[0]->{value}, 'oslo');
+is($res->terms->{'artifact.name'}->[0]->{count}, 2535);
 
 $res = SolarBeam::Response->new(fixture('fail'));
 ok(!$res->ok);
