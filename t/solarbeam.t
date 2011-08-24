@@ -58,6 +58,16 @@ is_query(
 );
 
 is_query(
+  $sb->build_url({ fq => [
+        ['a:%@ OR a:%@', 1, 2]
+    ]}),
+  
+  '/select',
+  'wt' => 'json',
+  'fq' => 'a:1 OR a:2'
+);
+
+is_query(
   $sb->build_url({ facet => {
         field => 'identifier.owner',
         mincount => 1

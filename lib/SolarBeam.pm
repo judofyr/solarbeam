@@ -130,7 +130,9 @@ sub build_query {
   if ($type eq 'HASH') {
     $self->build_hash(%{$query});
   } elsif ($type eq 'ARRAY') {
-    my ($raw, %params) = @{$query};
+    my ($raw, @params) = @$query;
+    $raw =~ s|%@|$self->escape(shift @params)|ge;
+    my %params = @params;
     $raw =~ s|%([a-z]+)|$self->escape($params{$1})|ge;
     $raw;
   } else {
