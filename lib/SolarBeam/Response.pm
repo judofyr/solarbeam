@@ -46,12 +46,18 @@ sub new {
     $self->$field($facets->{$field}) if $self->can($field);
   }
 
-  if ($facets) {
-    my $facet_fields = {};
-    for $field (keys %{$facets->{facet_fields}}) {
-      $facet_fields->{$field} = $self->build_count_list($facets->{facet_fields}->{$field});
+  my $ff = $self->facet_fields;
+  if ($ff) {
+    for $field (keys %$ff) {
+      $ff->{$field} = $self->build_count_list($ff->{$field});
     }
-    $self->facet_fields($facet_fields);
+  }
+
+  if ($self->facet_ranges) {
+    for $field (keys %{$self->facet_ranges}) {
+      my $range = $self->facet_ranges->{$field};
+      $range->{counts} = $self->build_count_list($range->{counts});
+    }
   }
 
   if ($terms) {

@@ -26,10 +26,22 @@ is(scalar @{$res->docs}, 10);
 
 $res = SolarBeam::Response->new(fixture('facets'));
 ok($res->ok);
+
 ok($res->facet_fields);
 is(scalar @{$res->facet_fields->{'identifier.owner'}}, 84);
 is($res->facet_fields->{'identifier.owner'}->[0]->{value}, 'NF');
 is($res->facet_fields->{'identifier.owner'}->[0]->{count}, 358262);
+
+
+$res = SolarBeam::Response->new(fixture('ranges'));
+ok($res->ok);
+ok($res->facet_ranges);
+my $year = $res->facet_ranges->{'artifact.ingress.production.fromYear'};
+is($year->{start}, -4000);
+is($year->{end}, 3000);
+is(scalar @{$year->{counts}}, 26);
+is($year->{counts}->[0]->{value}, 1750);
+is($year->{counts}->[0]->{count}, 20);
 
 $res = SolarBeam::Response->new(fixture('terms'));
 ok($res->ok);
