@@ -142,11 +142,15 @@ sub build_query {
 
 sub build_hash {
   my ($self, %fields) = @_;
+  my @query;
 
-  '('.
-    join(' AND ',
-    map { $_ . ':(' . $self->escape($fields{$_}). ')' } keys %fields).
-  ')';
+  for my $field (keys %fields) {
+    my $val = $fields{$field};
+    my @vals = ref($val) eq 'ARRAY' ? @{$val} : $val;
+    push @query, join(' OR ', map { $field . ':(' . $self->escape($_) .')' } @vals);
+  }
+
+  '(' . join(' AND ', @query) . ')';
 }
 
 sub escape {

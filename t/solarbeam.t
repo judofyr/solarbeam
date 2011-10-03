@@ -23,6 +23,7 @@ is($sb->escape(\'hel*o "world'), 'hel\\*o \\"world');
 is($sb->build_query('hello'), 'hello');
 is($sb->build_query(['%hello = %world', hello => '*', world => \'*']), '* = \\*');
 is($sb->build_query({hello => 'world'}), '(hello:(world))');
+is($sb->build_query({hello => ['hello', 'world']}), '(hello:(hello) OR hello:(world))');
 
 is_query(
   $sb->build_url(),
