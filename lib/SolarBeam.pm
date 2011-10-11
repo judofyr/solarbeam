@@ -60,8 +60,8 @@ sub build_url {
   my $url = $self->mojo_url->clone;
 
   $url->path($endpoint || 'select');
-  $url->query($self->default_query);
   $url->query(q => $self->build_query($query)) if $query;
+  $url->query($self->default_query);
   $url->query({wt => 'json'});
 
   if ($options->{page}) {
