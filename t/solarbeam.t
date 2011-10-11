@@ -110,3 +110,14 @@ is_query(
   'terms.fl' => 'artifact.name'
 );
 
+my $sbc = SolarBeam->new(url => 'http://localhost/', default_query => { awesome => 1 });
+is_query(
+  $sbc->build_url({cool => 1}),
+  '/select',
+  wt => 'json',
+  cool => 1,
+  awesome => 1
+);
+
+
+

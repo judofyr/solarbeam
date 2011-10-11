@@ -9,6 +9,7 @@ use SolarBeam::Query;
 has 'url';
 has 'mojo_url' => sub { Mojo::URL->new(shift->url) };
 has 'user_agent' => sub { Mojo::UserAgent->new };
+has 'default_query' => sub { {} };
 
 my $escape_all   = quotemeta( '+-&|!(){}[]^"~*?:\\' );
 my $escape_wilds = quotemeta( '+-&|!(){}[]^~:\\' );
@@ -59,6 +60,7 @@ sub build_url {
   my $url = $self->mojo_url->clone;
 
   $url->path($endpoint || 'select');
+  $url->query($self->default_query);
   $url->query(q => $self->build_query($query)) if $query;
   $url->query({wt => 'json'});
 
