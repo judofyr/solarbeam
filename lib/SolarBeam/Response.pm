@@ -9,7 +9,7 @@ has 'params';
 
 has 'numFound';
 has 'start';
-has 'docs';
+has 'docs' => sub { [] };
 
 has 'facet_queries';
 has 'facet_fields';
