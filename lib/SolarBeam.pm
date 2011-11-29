@@ -24,11 +24,15 @@ sub search {
   my $url = $self->build_url($options);
 
   $self->user_agent->get($url, sub {
-    my $res = SolarBeam::Response->new(pop->res->json);
+    my $res = SolarBeam::Response->new(pop->res);
 
     if ($page && $res->ok) {
       $res->pager->current_page($page);
       $res->pager->entries_per_page($options->{rows});
+    }
+
+    if (!$res->ok) {
+      warn "Solr failed: $url\n".$res->error;
     }
 
     $callback->(shift, $res);
@@ -47,7 +51,7 @@ sub autocomplete {
   my $url = $self->build_url($options);
 
   $self->user_agent->get($url, sub {
-    my $res = SolarBeam::Response->new(pop->res->json);
+    my $res = SolarBeam::Response->new(pop->res);
     $callback->(shift, $res);
   });
 }

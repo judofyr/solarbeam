@@ -4,6 +4,7 @@ use Mojo::Base -base;
 use Data::Page;
 
 has 'status';
+has 'error' => 'Unknown error';
 has 'QTime';
 has 'params';
 
@@ -21,8 +22,10 @@ has 'terms';
 has 'pager' => sub { Data::Page->new };
 
 sub new {
-  my ($class, $data) = @_;
+  my ($class, $msg) = @_;
   my $self = $class->SUPER::new;
+  my $data = $msg->json;
+
   my $header = $data->{responseHeader};
   my $res = $data->{response};
   my $facets = $data->{facet_counts};
@@ -31,6 +34,8 @@ sub new {
 
   if (!$header) {
     $self->status(1);
+    my $dom = $msg->dom;
+    $self->error($dom->at('title')->text) if $dom;
     return $self;
   }
 
