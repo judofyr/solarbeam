@@ -2,6 +2,7 @@ package SolarBeam::Response;
 
 use Mojo::Base -base;
 use Data::Page;
+use Mojo::JSON::Any;
 
 has 'status';
 has 'error' => 'Unknown error';
@@ -24,7 +25,7 @@ has 'pager' => sub { Data::Page->new };
 sub new {
   my ($class, $msg) = @_;
   my $self = $class->SUPER::new;
-  my $data = $msg->json;
+  my $data = Mojo::JSON::Any->new->decode($msg->body);
 
   my $header = $data->{responseHeader};
   my $res = $data->{response};
