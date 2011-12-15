@@ -5,6 +5,7 @@ use Test::More 'no_plan';
 
 use Mojo::JSON;
 use File::Basename;
+use Mojo::Message::Response;
 
 sub fixture {
   my $name = shift;
@@ -12,7 +13,7 @@ sub fixture {
   open(FILE, $file) or die 'Could not open '.$file;
   my $content = <FILE>;
   close(FILE);
-  Mojo::JSON->new->decode($content);
+  Mojo::Message::Response->new(code => 200)->body($content);
 }
 
 use_ok 'SolarBeam::Response';
