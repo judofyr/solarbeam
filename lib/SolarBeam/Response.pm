@@ -35,7 +35,13 @@ sub new {
   if (!$header) {
     $self->status(1);
     my $dom = $msg->dom;
-    $self->error($dom->at('title')->text) if $dom;
+    my $title = $dom->at('title') if $dom;
+
+    if ($title) {
+      $self->error($title->text);
+    } else {
+      $self->error($msg->code .': '. $msg->body);
+    }
     return $self;
   }
 
