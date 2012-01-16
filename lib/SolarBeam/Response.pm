@@ -22,9 +22,8 @@ has 'terms';
 
 has 'pager' => sub { Data::Page->new };
 
-sub new {
-  my ($class, $msg) = @_;
-  my $self = $class->SUPER::new;
+sub parse {
+  my ($self, $msg) = @_;
   my $data = Mojo::JSON::Any->new->decode($msg->body);
 
   my $header = $data->{responseHeader};

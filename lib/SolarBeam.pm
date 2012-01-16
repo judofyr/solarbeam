@@ -24,7 +24,7 @@ sub search {
   my $url = $self->build_url($options);
 
   $self->user_agent->get($url, sub {
-    my $res = SolarBeam::Response->new(pop->res);
+    my $res = SolarBeam::Response->new->parse(pop->res);
 
     if ($page && $res->ok) {
       $res->pager->current_page($page);
@@ -51,7 +51,7 @@ sub autocomplete {
   my $url = $self->build_url($options);
 
   $self->user_agent->get($url, sub {
-    my $res = SolarBeam::Response->new(pop->res);
+    my $res = SolarBeam::Response->new->parse(pop->res);
     $callback->(shift, $res);
   });
 }
