@@ -24,6 +24,13 @@ has 'pager' => sub { Data::Page->new };
 
 sub parse {
   my ($self, $msg) = @_;
+
+  if ($msg->error) {
+    $self->status(1);
+    $self->error($msg->error);
+    return $self;
+  }
+
   my $data = Mojo::JSON::Any->new->decode($msg->body);
 
   my $header = $data->{responseHeader};
