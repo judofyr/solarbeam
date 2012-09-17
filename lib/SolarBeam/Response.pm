@@ -13,10 +13,10 @@ has 'numFound';
 has 'start';
 has 'docs' => sub { [] };
 
-has 'facet_queries';
-has 'facet_fields';
-has 'facet_dates';
-has 'facet_ranges';
+has 'facet_queries' => sub { {} };
+has 'facet_fields' => sub { {} };
+has 'facet_dates' => sub { {} };
+has 'facet_ranges' => sub { {} };
 
 has 'terms';
 
