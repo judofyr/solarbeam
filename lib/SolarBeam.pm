@@ -2,6 +2,7 @@ package SolarBeam;
 
 use Mojo::Base -base;
 use Mojo::UserAgent;
+use Mojo::Parameters;
 use Mojo::URL;
 use SolarBeam::Response;
 use SolarBeam::Query;
@@ -23,7 +24,10 @@ sub search {
 
   my $url = $self->build_url($options);
 
-  $self->user_agent->get($url, sub {
+  my $q = $url->query;
+  $url->query(Mojo::Parameters->new);
+
+  $self->user_agent->post($url, {'Content-Type' => 'application/x-www-form-urlencoded'} => $q, sub {
     my $res = SolarBeam::Response->new->parse(pop->res);
 
     if ($page && $res->ok) {
